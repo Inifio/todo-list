@@ -1,28 +1,51 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import SingleTodo from './SingleTodo';
 
 class App extends Component {
+  constructor() {
+    super(); 
+    this.state = {
+      todo: [],
+      currentTodo: " "
+    }
+  }
+
+  handleChange = event => {
+    this.setState({currentTodo: event.target.value})
+  }
+
+  onClick = () => {
+    let todosCopy = this.state.todo.slice();
+    todosCopy.push(this.state.currentTodo);
+
+    this.setState({ todo: todosCopy });
+    this.setState({currentTodo: ""});
+  }
+
+  deleteTodo = i => {
+    let todoCopy = this.state.todo.slice();
+
+    todoCopy.splice(i, 1);
+
+    this.setState({ todo: todoCopy });
+  }
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+    let bulletedTodo = this.state.todo.map((e, i) => {
+      return(
+        <SingleTodo todo={e} delete={() => this.deleteTodo(i)} />
+      );
+    });
+    return(
+      <div>
+        <input placeholder="Something todo?" value={this.state.currentTodo} onChange={this.handleChange} />
+        <button onClick={this.onClick}>Add to Todo</button>
+        <br />
+        {this.state.todo.length === 0 ? 'Nothing to do! \\o/' : <ul>{bulletedTodo}</ul> }
       </div>
     );
   }
+
 }
 
 export default App;
